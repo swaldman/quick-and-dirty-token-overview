@@ -76,14 +76,8 @@ class ProxiedMintableBurnableERC20Spec extends Specification with AutoSender { d
   // this is lots more of a pain than I'd expected
   lazy val adminProxy = {
     val proxyInfo : stub.TransactionInfo = upgradeabilityProxyFactory.transaction.createProxyAndCall( randomAdmin.address, originalImplementation.contractAddress, initializationData )
-    val details = proxyInfo.details
-    val blocknum = BlockNumber( details.blockNumber.widen )
-    val createEvents = {
-      val fut = UpgradeabilityProxyFactory.Event.ProxyCreated.fetch( Seq( upgradeabilityProxyFactory.contractAddress ), Some( blocknum ), Some( blocknum ) )
-      Await.result( fut, Duration.Inf )
-    }
-    assert( createEvents.length == 1, s"Expected precisely one ProxyCreated event, found ${createEvents.length}: ${createEvents}" )
-    AdminUpgradeabilityProxy( createEvents.head.proxy )
+    val proxyCreatedEvent = UpgradeabilityProxyFactory.Event.ProxyCreated.collect( proxyInfo ).ensuring( _.size == 1 ).head // check that we have just one event, as expected, then get it
+    AdminUpgradeabilityProxy( proxyCreatedEvent.proxy )
   }
   lazy val tokenProxy = ProxyableMintableBurnableERC20( adminProxy.contractAddress )
 
