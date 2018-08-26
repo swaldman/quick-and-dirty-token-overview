@@ -2,6 +2,13 @@
 
 ### Some notes from a workshop on the nuts and bolts of building tokens
 
+## Table of Contents
+
+* [Disclaimers](#disclaimers)
+* [ERC20 Definition](#erc20-definition)
+* [Code in this repository](#code-in-this-repository)
+* [ERC20 (and Solidity smart contract) Security](#erc20-and-solidity-smart-contract-security)
+
 ## Disclaimers
 
 **&#X1F449; Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
@@ -205,3 +212,11 @@ The storage layout of contracts is also a function of linearization, and delegat
 support upgradability, one must be sure that the storage layout is preserved (although perhaps extended) by the new contract. Usually this means the ordering of storage-affecting
 compilation units must be preserved.
  
+### 10. Be creatively paranoid
+
+Everything that can be exploited will be exploited. No checklist can capture it all.
+
+
+
+
+
