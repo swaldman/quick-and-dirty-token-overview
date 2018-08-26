@@ -3,7 +3,7 @@
  *       the existence of the paused field does change the storage representation
  *       of the contract.
  * 
- *       However, since we are just appending a fields whose default value should be
+ *       However, since we are just appending a field whose default value should be
  *       zero, it does work correctly. 
  * 
  *       But this is a fragile technique! You always have to be careful that, if the
