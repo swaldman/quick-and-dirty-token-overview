@@ -7,19 +7,19 @@
 **&#X1F449; Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
 
 **&#X1F449; The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
-           see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos).**
+            see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos).**
 
 **&#X1F449; The Zeppelin OS Proxy library code is bleeding edge and not quite stable. Zeppelin is doing great work on safe-ish and resilient proxying, but
-           it is work in progress.**
+            it is work in progress.**
 
 **&#X1F449; No effing warranties, of course, whether of my work or others'. Both the code herein and the exposition below are, um, quick and dirty, intended as a
-           starting point, not an ending point.**
+            starting point, not an ending point.**
 
 ## ERC20 Definition
 
 A good place to see the formal definition of the ERC20 standard, as well as an overview of how it works, is [here](https://theethereum.wiki/w/index.php/ERC20_Token_Standard)
 
-## Contents of this repository
+## Code in this repository
 
 1. [HelloWorld.sol](./src/main/solidity/HelloWorld.sol) -- Just a quick Solidity Hello World
 2. [UnsafeSimpleToken.sol](./src/main/solidity/UnsafeSimpleToken.sol) and [SafeSimpleToken.sol](./src/main/solidity/SafeSimpleToken.sol) -- An implementation of the (very simple!) heart of a token contract, first with unsafe (but readable) native math operations, and then improved to use the [Open Zeppelin SafeMath Library](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol)
@@ -27,6 +27,34 @@ A good place to see the formal definition of the ERC20 standard, as well as an o
 4. [MintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/MintableBurnableERC20Spec.scala) -- A scala unit test of [MintableBurnableERC20.sol](./src/main/solidity/MintableBurnableERC20.sol). Relies upon predeployment of an instance of `MintableBurnableERC20.sol`, which this build defines via `Test / ethcfgAutoDeployContracts` in [build.sbt](./build.sbt#L23)
 5. [ProxyableMintableBurnableERC20.sol](./src/main/solidity/ProxyableMintableBurnableERC20.sol), [PausableMintableBurnableERC20.sol](./src/main/solidity/PausableMintableBurnableERC20.sol), and [ZeppelinOsUpgradableProxyFactory.sol](./src/main/solidity/ZeppelinOsUpgradableProxyFactory.sol) -- An exercise in desiging an ERC20 contract with an initializer externalized from the constructor (to support upgradability), and then an upgrading in place to a Pausable version of that contract using (work-in-progress) Zeppelin OS libraries.
 6. [ProxiedMintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/ProxiedMintableBurnableERC20Spec.scala) -- A Scala unit test that deploys an upgradable proxy token without pausability, then upgrades it to a pausable version
+
+#### Compiling
+
+To compile the code, make sure a Java 8 virtual machine is installed on your computer, then run `./sbtw` from the base directory of this repository. The first time you run this, lots of suff will get
+downloaded and it will be slow.You will be prompted to install a solidity compiler. Do that. Then...
+
+```
+sbt:quick-and-dirty-token-overview> compile
+
+```
+
+#### Testing
+
+To run the unit tests, you will need `ganache-cli` installed on your machine, which is a node.js application. If you are set up for that kind of thing...
+
+```
+npm install -g ganache-cli
+```
+
+For more information on ganache, look [here](https://truffleframework.com/docs/ganache/quickstart).
+
+Once `ganache-cli` is installed and in your path, you should be able to...
+
+```
+sbt:quick-and-dirty-token-overview> ethDebugGanacheTest
+```
+
+which will deploy the solidity smaty-contracts in a local, temporary environment and run the unit tests.
 
 ## ERC20 (and Solidity smart contract) Security
 
