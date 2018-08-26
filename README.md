@@ -4,15 +4,15 @@
 
 ## Disclaimers
 
-**&X1F449; Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
+**&#X1F449; Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
 
-**&X1F449; The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
+**&#X1F449; The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
            see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos).**
 
-**&X1F449; The Zeppelin OS Proxy library code is bleeding edge and not quite stable. Zeppelin is doing great work on safe-ish and resilient proxying, but
+**&#X1F449; The Zeppelin OS Proxy library code is bleeding edge and not quite stable. Zeppelin is doing great work on safe-ish and resilient proxying, but
            it is work in progress.**
 
-**&X1F449; No effing warranties, of course, whether of my work or others'. Both the code herein and the exposition below are, um, quick and dirty, intended as a
+**&#X1F449; No effing warranties, of course, whether of my work or others'. Both the code herein and the exposition below are, um, quick and dirty, intended as a
            starting point, not an ending point.**
 
 ## ERC20 Definition
