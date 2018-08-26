@@ -24,16 +24,16 @@
 
 ## ERC20 Definition
 
-A good place to see the formal definition of the ERC20 standard, as well as an overview of how it works, is [here](https://theethereum.wiki/w/index.php/ERC20_Token_Standard)
+A good place to see the formal definition of the ERC20 standard, as well as an overview of how it works, is [here](https://theethereum.wiki/w/index.php/ERC20_Token_Standard).
 
 ## Code in this repository
 
-1. [HelloWorld.sol](./src/main/solidity/HelloWorld.sol) -- Just a quick Solidity Hello World
-2. [UnsafeSimpleToken.sol](./src/main/solidity/UnsafeSimpleToken.sol) and [SafeSimpleToken.sol](./src/main/solidity/SafeSimpleToken.sol) -- An implementation of the (very simple!) heart of a token contract, first with unsafe (but readable) native math operations, and then improved to use the [Open Zeppelin SafeMath Library](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol)
-3. [MintableBurnableERC20.sol](./src/main/solidity/MintableBurnableERC20.sol) -- A fully functional implementation of an ERC 20 in almost no user code (relying instead upon the Open Zeppelin library)
-4. [MintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/MintableBurnableERC20Spec.scala) -- A scala unit test of [MintableBurnableERC20.sol](./src/main/solidity/MintableBurnableERC20.sol). Relies upon predeployment of an instance of `MintableBurnableERC20.sol`, which this build defines via `Test / ethcfgAutoDeployContracts` in [build.sbt](./build.sbt#L23)
-5. [ProxyableMintableBurnableERC20.sol](./src/main/solidity/ProxyableMintableBurnableERC20.sol), [PausableMintableBurnableERC20.sol](./src/main/solidity/PausableMintableBurnableERC20.sol), and [ZeppelinOsUpgradableProxyFactory.sol](./src/main/solidity/ZeppelinOsUpgradableProxyFactory.sol) -- An exercise in desiging an ERC20 contract with an initializer externalized from the constructor (to support upgradability), and then an upgrading in place to a Pausable version of that contract using (work-in-progress) Zeppelin OS libraries.
-6. [ProxiedMintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/ProxiedMintableBurnableERC20Spec.scala) -- A Scala unit test that deploys an upgradable proxy token without pausability, then upgrades it to a pausable version
+1. [HelloWorld.sol](./src/main/solidity/HelloWorld.sol) &mdash; Just a quick Solidity Hello World
+2. [UnsafeSimpleToken.sol](./src/main/solidity/UnsafeSimpleToken.sol) and [SafeSimpleToken.sol](./src/main/solidity/SafeSimpleToken.sol) &mdash; An implementation of the (very simple!) heart of a token contract, first with unsafe (but readable) native math operations, and then improved to use the [Open Zeppelin SafeMath Library](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol)
+3. [MintableBurnableERC20.sol](./src/main/solidity/MintableBurnableERC20.sol) &mdash; A fully functional implementation of an ERC 20 in almost no user code (relying instead upon the Open Zeppelin library)
+4. [MintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/MintableBurnableERC20Spec.scala) &mdash; A scala unit test of [MintableBurnableERC20.sol](./src/main/solidity/MintableBurnableERC20.sol). Relies upon predeployment of an instance of `MintableBurnableERC20.sol`, which this build defines via `Test / ethcfgAutoDeployContracts` in [build.sbt](./build.sbt#L23)
+5. [ProxyableMintableBurnableERC20.sol](./src/main/solidity/ProxyableMintableBurnableERC20.sol), [PausableMintableBurnableERC20.sol](./src/main/solidity/PausableMintableBurnableERC20.sol), and [ZeppelinOsUpgradableProxyFactory.sol](./src/main/solidity/ZeppelinOsUpgradableProxyFactory.sol) &mdash; An exercise in desiging an ERC20 contract with an initializer externalized from the constructor (to support upgradability), and then an upgrading in place to a Pausable version of that contract using (work-in-progress) Zeppelin OS libraries.
+6. [ProxiedMintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/ProxiedMintableBurnableERC20Spec.scala) &mdash; A Scala unit test that deploys an upgradable proxy token without pausability, then upgrades it to a pausable version
 
 #### Compiling
 
