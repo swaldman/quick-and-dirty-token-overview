@@ -4,13 +4,13 @@
 
 ---
 
-** Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited! **
+**Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
 
-** The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
-   see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos). **
+**The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
+   see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos).**
 
-** No effing warranties, of course, whether of my work or theirs. Both the code herein and exposition below are quick and dirty, intended as a
-   starting point, not an ending point. **
+**No effing warranties, of course, whether of my work or theirs. Both the code herein and exposition below are quick and dirty, intended as a
+   starting point, not an ending point.**
 
 ---
 
@@ -24,7 +24,7 @@ For potentially high-value smart contracts, correctness and security should be p
 has proven to be a challenging problem. One good thing is that everybody else's costly mistakes forms a growing checklist of things you can try to guard against
 when auditing your own code. Here are some items on that checklist, things you audit should be sure to examine.
 
-1. ** Unsafe arithemtic **
+1. **Unsafe arithemtic**
 
 Solidity numerical data types are fixed length and silently overflow. *Using built-in arithmetic operators is unsafe! You should almost never do it*
 Instead use something like Open Zeppelin's [SafeMath](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol).
@@ -38,13 +38,13 @@ than any that the contract has aleady seen, or that autogenerates a sequence num
 contract simply by conducting a tranaction and providing the maximum value of the sequence-number's type as its sequece number. Users will not be able to provide
 their own new sequence number, and the contract will trigger overflows and revert state if it tries internaly to increment the sequence number.
 
-2. ** Computatation exceeding block gas limit **
+2. **Computatation exceeding block gas limit**
 
 An Ethereum transactions must be incorporated into a block, but a block is permitted to represent only a limited amount of computation. The block "gas limit" [varies
 over time](https://etherscan.io/chart/gaslimit), but any proposed tranaction that exceeds it will not be incorporated (until some perhaps hypothetical future when
 the block limit becomes long enough, in the unlikely event the transaction is still valid).
 
-** You must take care to avoid code that may result in unbounded or unlimited computation. **
+**You must take care to avoid code that may result in unbounded or unlimited computation.**
 
 Most commonly, this means you should avoid unlimited iteration. If you have
 a contract, for example, that at some "maturity" pays off a variable-length list of stakeholders based on interactions with the contract prior to maturity, you may
@@ -53,7 +53,7 @@ find that no one can be paid if the list has grown too large for the interation 
 (In general in such situations it's best to adopt a right-to-withdraw rather than payout approach. When the contract is mature, each stakeholder obtains a right to
 individually withdraw their balance in their own, separate tranaction. Thus no iteration is required within the contact to disburse funds.]
 
-3. ** Overly public or insufficiently guarded functions **
+3. **Overly public or insufficiently guarded functions**
 
 Functions are public by default in current versions of Solidity. (This was not a great design choice, I think.) Often contracts will include functions
 intended to be called only within the contract itself, or when the contract is in a certain state (such as "uninitialized"), or by certain callers.
@@ -64,7 +64,7 @@ Functions that must only be called when a function is in a certain state or by c
 if the same requirement obtains for multiple functions, via a custom Solidity modifier that guards function bodies behind a `require` statement. (Custom
 modifiers are a really nice Solidity design choice, IMHO.)
 
-4. ** Incautious delegation **
+4. **Incautious delegation**
 
 The EVM permits contracts to delegate their computation to some other contract, rather to perform the computation themselves, if their storage is compatible. This functionality is known
 as "delegatecall". Delegation can be desirable for a couple of reasons:
@@ -96,7 +96,7 @@ If you use a delegation pattern, to reduce deployment expense, to enable upgrade
 (Note that upgradability techniques often require initialization functions distinct from contract constructors. Be very careful to restrict access to these initializers,
 so that only the upgrading party can call them and they cannot be called more than once!)
 
-5. ** Sending ETH can be dangerous **
+5. **Sending ETH can be dangerous**
 
 _Note: An ERC-20 token usually does not need to send or receive ETH._
 
@@ -127,14 +127,14 @@ modification of contract state that must be performed, and only afterwards "inte
 are the last thing you do, and you don't need to update state in response to those interactions, then any callbacks
 back into the contract from interactions can be considered to have occurred logically after your own function has completed.
 
-6. ** Reentrancy **
+6. **Reentrancy**
 
 It is not only sending ether that surrenders control to another caller who might unexpectedly "re-enter", or call functions on the contract while another function
 remains in process. Any time a contract calls calls a function on another contract, such a callback could occur. Just as with payments, contract authors should treat
 calls to contracts outside of their own authorship and control as potentially malicious re-enterers, an should strive to adhere to the "checks, effects, interactions"
 pattern.
 
-7. ** Unexpected excess ETH or token balances **
+7. **Unexpected excess ETH or token balances**
 
 Contracts can refuse to accept payments in ETH by failing to mark any function (including the default, fallback function) as `payable`. However, their are two ways to
 circumvent this restriction. Payments will occur regardless of the presence of any `payable` function if
@@ -149,14 +149,14 @@ but it may be greater.
 Similarly, a contract has no control over how many ERC20 tokens its address receives. While the contract may (using the `approve` / `transferFrom` mechanism)
 control some inflows of tokens, other parties may add to a contract's token balance without any notification of or capacity to refuse by the recipient contract.
 
-8. ** Frozen token balances **
+8. **Frozen token balances**
 
 Unless a smart contract expects to receive and is coded to interact with an ERC20 token, tokens sent to that contract's address will usually be frozen forever.
 ERC 20 token contracts have no way of vetoing transfers to them. (Successors to the ERC 20 standard hope to add such vetos.)
 
 It is possible to code contracts such that some "owner" can withdraw unexpected token balances sent to the contract.
 
-9. ** Inheritance linearization confusions **
+9. **Inheritance linearization confusions**
 
 Solidity supports multiple inheritance, and customization via inheritance and mixins is quite common. Under the covers, Solidity uses [C3 Linearization](https://en.wikipedia.org/wiki/C3_linearization)
 to order the inheritance relationship. However, while the linearization algorithm does its job of imposing a unique ordering of contracts (from base to derived), as hierarchies
