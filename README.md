@@ -76,7 +76,7 @@ as "delegatecall". Delegation can be desirable for a couple of reasons:
 However, delegation is dangerous!
 
    * Universal delegation, whereby all function calls are forwarded to the delegate via its fallback function, exposes all functions of the delegate contract to
-all users, which may include functionaliy users of proxy contracts should not be able to access. ** Access to delegate functions should be carefully guarded. **
+all users, which may include functionaliy users of proxy contracts should not be able to access. **Access to delegate functions should be carefully guarded.**
    * Delegation will yield disruptive, almost certainly undesirable behavior, if the storage of the stub and the delegate are not compatible. "Upgrading" a contract
      to a delegate with incompatible storage will yield caastrophic results.
    * Solidity's built-in `delegatecall` and `call` functions return 0, but do not revert, if there is no code at the address of the delegate or callee or if the call fails.
