@@ -2,18 +2,18 @@
 
 ### Some notes from a workshop on the nuts and bolts of building tokens
 
-Disclaimers
+## Disclaimers
 
-**--> Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
+**Quick and dirty means quick and dirty! Don't offer high-value solidity contracts to the world without being slow and audited!**
 
-**--> The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
+**The code here is mostly just stolen (under MIT License) from the excellent work of the [Zeppelin](https://zeppelin.solutions) [team](https://zeppelinos.org),
       see [Open Zeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity) and [Zeppelin OS](https://github.com/zeppelinos/zos).**
 
-**--> The Zeppelin OS Proxy library code is bleeding edge and not quite stable. Zeppelin is doing great work on safe-ish and resilient proxying, but
-      it is work in progress.
+**The Zeppelin OS Proxy library code is bleeding edge and not quite stable. Zeppelin is doing great work on safe-ish and resilient proxying, but
+  it is work in progress.
 
-**--> No effing warranties, of course, whether of my work or theirs. Both the code herein and exposition below are quick and dirty, intended as a
-      starting point, not an ending point.**
+**No effing warranties, of course, whether of my work or others'. Both the code herein and the exposition below are, um, quick and dirty, intended as a
+  starting point, not an ending point.**
 
 ## ERC20 Definition
 
