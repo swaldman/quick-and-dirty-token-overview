@@ -407,7 +407,7 @@ Have fun!
 
 #### Appendix: Tabbability
 
-**sbt-ethereum is designed around tabbability. The command names are ridiculously verbose and annoying long, but there is method to the madness. They are
+**_sbt-ethereum is designed around tabbability._ The command names are ridiculously verbose and annoying long, but there is method to the madness. They are
 designed so that at each "level" you have to type only a single character to tab to the next level.**
 
 For example, suppose you want to type the ridiculously long command `ethAddressSenderOverrideSet`. You don't actually type that. Your fingers would fall off.
