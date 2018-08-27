@@ -12,7 +12,7 @@ ethcfgJsonRpcUrl := {
     s"""https://ropsten.infura.io/${infuraToken}"""
   }
   catch {
-    case t : Throwable => println( "WARNING: No Infura Token found, Ethereum JSON-RPC calls will probably fail." )
+    case t : Throwable => println( "WARNING: No Infura API Token found, Ethereum JSON-RPC calls may fail. If they do, set environment variable ETH_INFURA_TOKEN and rerun." )
     "https://ropsten.infura.io/"
   }
 }
