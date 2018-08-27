@@ -45,7 +45,7 @@ A good place to see the formal definition of the ERC20 standard, as well as an o
 ## ERC20 (and Solidity smart contract) Security
 
 For potentially high-value smart contracts, correctness and security should be prioritized over all other things. Getting Solidity smart-contacts "right"
-has proven to be a challenging problem. One good thing is that everybody else's costly mistakes forms a growing checklist of things you can try to guard against
+has proven to be a challenging problem. One good thing is that everybody else's costly mistakes has formed a growing checklist of things you can try to guard against
 when auditing your own code. Here are some items on that checklist, things you audit should be sure to examine.
 
 ### 1. Unsafe arithemtic
