@@ -35,17 +35,49 @@ A good place to see the formal definition of the ERC20 standard, as well as an o
 5. [ProxyableMintableBurnableERC20.sol](./src/main/solidity/ProxyableMintableBurnableERC20.sol), [PausableMintableBurnableERC20.sol](./src/main/solidity/PausableMintableBurnableERC20.sol), and [ZeppelinOsUpgradableProxyFactory.sol](./src/main/solidity/ZeppelinOsUpgradableProxyFactory.sol) &mdash; An exercise in desiging an ERC20 contract with an initializer externalized from the constructor (to support upgradability), and then an upgrading in place to a Pausable version of that contract using (work-in-progress) Zeppelin OS libraries.
 6. [ProxiedMintableBurnableERC20Spec.scala](./src/test/scala/quickanddirty/contract/ProxiedMintableBurnableERC20Spec.scala) &mdash; A Scala unit test that deploys an upgradable proxy token without pausability, then upgrades it to a pausable version
 
-#### Compiling
+## How to play with the code
+
+This is an `sbt-ethereum` project. It tries to be as portable as possible. You should be able to clone this repository from github and immediately follow the
+instructions below. The only prerequisite is an installed Java 8 virtual machine in the path.
+
+**sbt-ethereum is designed around tabbability. The command names are ridiculously verbose and annoying long, but there is method to the madness. They are
+designed so that at each "level" you have to type only a single character to tab to the next level.**
+
+For example, suppose you want to type the ridiculously long command `ethAddressSenderOverrideSet`. You don't actually type that. Your fingers would fall off.
+You end up typing just `ethA<tab>S<tab>O<tab>S`. But you don't have to remember that! Type `eth<tab>` and you'll see a lot (too many) commands. Choose the subcommand
+that seems relevant (`Address`), it starts with an `A`, so type `A<tab>`. Then type `<tab>` again and you'll see something like
+```
+ethAddressAliasDrop             ethAddressAliasList             ethAddressAliasSet              ethAddressBalance
+ethAddressPing                  ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint
+ethAddressSenderOverrideSet     
+```
+
+You are trying to change the sending address, so you will continue with `S<tab>`. Press `<tab> again.
+```
+ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint   ethAddressSenderOverrideSet     
+```
+
+You want to set an override, so you will type `O<tab>` and then `S<tab>`, and finally you will have completed the command.
+
+When the command is complete, press `<space>` and then `<tab>` again:
+```
+<address-hex>       <ens-name>.eth      defaultSender       mintable-burnable   
+```
+
+You will see what the command expects as its next argument, if any. If no more arguments are expected, you will see the string `{invalid input}`, and you
+should just hit return to execute the command, without typing anything more.
+
+#### Compile
 
 To compile the code, make sure a Java 8 virtual machine is installed on your computer, then run `./sbtw` from the base directory of this repository. The first time you run this, lots of suff will get
-downloaded and it will be slow.You will be prompted to install a solidity compiler. Do that. Then...
+downloaded and it will be slow. You will be prompted to create a wallet, to let it be the default sender for the blockchain 'ropsten', and to install a solidity compiler. Do all of those things. Then...
 
 ```
 sbt:quick-and-dirty-token-overview> compile
 
 ```
 
-#### Testing
+#### Test (optional)
 
 To run the unit tests, you will need `ganache-cli` installed on your machine, which is a node.js application. If you are set up for that kind of thing...
 
@@ -61,7 +93,125 @@ Once `ganache-cli` is installed and in your path, you should be able to...
 sbt:quick-and-dirty-token-overview> ethDebugGanacheTest
 ```
 
-which will deploy the solidity smaty-contracts in a local, temporary environment and run the unit tests.
+which will deploy the solidity smart-contracts in a local, temporary environment and run the unit tests.
+
+#### Deploy and interact on ropsten
+
+Before you can deploy contracts defined in this package, you will need to get some Ropsten test ether from a faucet. Try or https://blog.b9lab.com/when-we-first-built-our-faucet-we-deployed-it-on-the-morden-testnet-70bfbf4e317e (I recommend "script ninja mode") or https://faucet.ropsten.be. Use the account you created on startup.
+If you have forgotten it, you can use...
+```
+sbt:quick-and-dirty-token-overview> ethKeystoreList
+```
+
+Once you have generated a transaction from the faucet, follow it (via the transaction hash that is generated) at http://ropsten.etherscan.io/
+
+When the transaction is mined (no longer pending), you should be able to see a balance:
+```
+sbt:quick-and-dirty-token-overview> ethAddressBalance
+```
+
+If you have not alreay compiled the contacts in the project, do so:
+
+```
+sbt:quick-and-dirty-token-overview> compile
+```
+
+Now you can try to deploy.
+```
+sbt:quick-and-dirty-token-overview> ethTransactionDeploy MintableBurnableERC20
+```
+
+If deployment hangs for a very long time, it probably means the gas price estimated by the node is too low. You can <ctrl-c> to interrupt, rerun `./sbtw`, and then try...
+```
+sbt:quick-and-dirty-token-overview> ethGasPriceOverrideSet 5 gwei
+```
+and then
+
+```
+sbt:quick-and-dirty-token-overview> ethTransactionDeploy MintableBurnableERC20
+```
+
+Once deployment completes, sbt-ethereum will prompt you to give the new contract address an alias, if you wish. You can verify that the contract is deployed
+using
+
+```
+sbt:quick-and-dirty-token-overview> ethContractCompilationList
+```
+
+It's the one with a deployment address. If the list is long and ugly, clean up undeployed compilations with
+```
+sbt:quick-and-dirty-token-overview> ethContractCompilationCull
+```
+
+and then list again. If you set an alias for the contact, check that with
+
+```
+sbt:quick-and-dirty-token-overview> ethAddressAliasList
+```
+
+Once you have a deployed contact, try
+
+```
+sbt:quick-and-dirty-token-overview> ethTransactionView 0x906245d8ceae99c83947eaf81cdf6716a80950c7 <tab>
+```
+
+but with the address **or the alias** of your newly deployed contract. You should see the read-only methods of the contract. Try some. Once you have entered a method name,
+hit tab to be prompted for arguments, for functions that require arguments. Try some.
+
+The results of all these functions will basically be zero on this newly deployed token contract. To change that, you'll have to call transactions that
+modify the blockchain, functions like `mint` and `transfer`. If you needed to set a gas override to get your deployment transaction to mine, make sure that is still
+in effect (it should be, if you haven't quit the session) with
+```
+sbt:quick-and-dirty-token-overview> ethGasPriceOverridePrint
+```
+
+To reset it, use again
+```
+sbt:quick-and-dirty-token-overview> ethGasPriceOverrideSet 5 gwei
+```
+
+(Try `ethGasPriceOverride`<tab> to see all the `ethGasPriceOverride`-related commands.)
+
+Now try something like
+
+```
+ethTransactionInvoke 0x906245d8ceae99c83947eaf81cdf6716a80950c7 <tab>
+```
+
+replacing `0x906245d8ceae99c83947eaf81cdf6716a80950c7` with your newly deployed contract's address **or alias**.
+
+You should see more functions available, including `mint`.
+
+Let's mint some tokens to the `defaultSender` (from which we've been sending our transactions):
+```
+sbt:quick-and-dirty-token-overview> ethTransactionInvoke 0x906245d8ceae99c83947eaf81cdf6716a80950c7 mint defaultSender 10000000
+```
+
+Again, replace `0x906245d8ceae99c83947eaf81cdf6716a80950c7` with your newly deployed contract's address **or alias**.
+
+Now see if you can `ethTransactionView` to see the new `totalSupply`, as well as the `balanceOf` `defaultSender`.
+
+If you want to start transferring tokens, you can just transfer to random addresses, but then your tokens will be lost for good. If you want to be able to
+transfer them back, you can create more addresses and wallets. Try
+
+```
+sbt:quick-and-dirty-token-overview> ethKeystoreWalletV3Create
+```
+
+This command does noy (yet) automatically prompt for an alias. If you want to give it one, use
+
+```
+sbt:quick-and-dirty-token-overview> ethAddressAliasSet <alias> <address-hex>
+```
+
+replacing `<alias>` and `<address-hex>` with appropriate values.
+
+To send transactions from addresses other than the `defaultSender` you defined initially, use
+```
+sbt:quick-and-dirty-token-overview> ethAddressSenderOverrideSet <address-hex-or-alias>
+```
+
+Have fun!
 
 ## ERC20 (and Solidity smart contract) Security
 
