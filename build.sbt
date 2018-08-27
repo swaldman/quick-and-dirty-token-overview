@@ -4,7 +4,7 @@ version := "0.0.1-SNAPSHOT"
 
 ethcfgScalaStubsPackage := "quickanddirty.contract"
 
-ethcfgBlockchainId := "ropsten"
+ethcfgBlockchainId := "ropsten" // Note: This configuration parameter is likely to disappear from sb-ethereum, in favor of a numeric EIP-155 Chain ID
 
 ethcfgJsonRpcUrl := {
   try {
