@@ -7,6 +7,11 @@
 * [Disclaimers](#disclaimers)
 * [ERC20 Definition](#erc20-definition)
 * [Code in this repository](#code-in-this-repository)
+* [How to play with the code](#how-to-play-with-the-code)
+  - [Compile](#compile)
+  - [Test (optional)](#test-optional)
+  - [Deploy and interact on ropsten](#deploy-and-interact-on-ropsten)
+  - [Appendix: Tabbability](#appendix-tabbability)
 * [ERC20 (and Solidity smart contract) Security](#erc20-and-solidity-smart-contract-security)
 
 ## Disclaimers
@@ -39,33 +44,6 @@ A good place to see the formal definition of the ERC20 standard, as well as an o
 
 This is an `sbt-ethereum` project. It tries to be as portable as possible. You should be able to clone this repository from github and immediately follow the
 instructions below. The only prerequisite is an installed Java 8 virtual machine in the path.
-
-**sbt-ethereum is designed around tabbability. The command names are ridiculously verbose and annoying long, but there is method to the madness. They are
-designed so that at each "level" you have to type only a single character to tab to the next level.**
-
-For example, suppose you want to type the ridiculously long command `ethAddressSenderOverrideSet`. You don't actually type that. Your fingers would fall off.
-You end up typing just `ethA<tab>S<tab>O<tab>S`. But you don't have to remember that! Type `eth<tab>` and you'll see a lot (too many) commands. Choose the subcommand
-that seems relevant (`Address`), it starts with an `A`, so type `A<tab>`. Then type `<tab>` again and you'll see something like
-```
-ethAddressAliasDrop             ethAddressAliasList             ethAddressAliasSet              ethAddressBalance
-ethAddressPing                  ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint
-ethAddressSenderOverrideSet     
-```
-
-You are trying to change the sending address, so you will continue with `S<tab>`. Press `<tab> again.
-```
-ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint   ethAddressSenderOverrideSet     
-```
-
-You want to set an override, so you will type `O<tab>` and then `S<tab>`, and finally you will have completed the command.
-
-When the command is complete, press `<space>` and then `<tab>` again:
-```
-<address-hex>       <ens-name>.eth      defaultSender       mintable-burnable   
-```
-
-You will see what the command expects as its next argument, if any. If no more arguments are expected, you will see the string `{invalid input}`, and you
-should just hit return to execute the command, without typing anything more.
 
 #### Compile
 
@@ -212,6 +190,35 @@ sbt:quick-and-dirty-token-overview> ethAddressSenderOverrideSet <address-hex-or-
 ```
 
 Have fun!
+
+#### Appendix: Tabbability
+
+**sbt-ethereum is designed around tabbability. The command names are ridiculously verbose and annoying long, but there is method to the madness. They are
+designed so that at each "level" you have to type only a single character to tab to the next level.**
+
+For example, suppose you want to type the ridiculously long command `ethAddressSenderOverrideSet`. You don't actually type that. Your fingers would fall off.
+You end up typing just `ethA<tab>S<tab>O<tab>S`. But you don't have to remember that! Type `eth<tab>` and you'll see a lot (too many) commands. Choose the subcommand
+that seems relevant (`Address`), it starts with an `A`, so type `A<tab>`. Then type `<tab>` again and you'll see something like
+```
+ethAddressAliasDrop             ethAddressAliasList             ethAddressAliasSet              ethAddressBalance
+ethAddressPing                  ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint
+ethAddressSenderOverrideSet     
+```
+
+You are trying to change the sending address, so you will continue with `S<tab>`. Press `<tab> again.
+```
+ethAddressSenderEffective       ethAddressSenderOverrideDrop    ethAddressSenderOverridePrint   ethAddressSenderOverrideSet     
+```
+
+You want to set an override, so you will type `O<tab>` and then `S<tab>`, and finally you will have completed the command.
+
+When the command is complete, press `<space>` and then `<tab>` again:
+```
+<address-hex>       <ens-name>.eth      defaultSender       mintable-burnable   
+```
+
+You will see what the command expects as its next argument, if any. If no more arguments are expected, you will see the string `{invalid input}`, and you
+should just hit return to execute the command, without typing anything more.
 
 ## ERC20 (and Solidity smart contract) Security
 
