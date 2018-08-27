@@ -13,6 +13,7 @@
   - [Deploy and interact on ropsten](#deploy-and-interact-on-ropsten)
   - [Appendix: Tabbability](#appendix-tabbability)
 * [ERC20 (and Solidity smart contract) Security](#erc20-and-solidity-smart-contract-security)
+* [Some other things to think about](#some-other-things-to-think-about)
 
 ## Disclaimers
 
@@ -45,6 +46,8 @@ A good place to see the formal definition of the ERC20 standard, as well as an o
 This is an `sbt-ethereum` project. It tries to be as portable as possible. You should be able to clone this repository from github and immediately follow the
 instructions below. The only prerequisite is an installed Java 8 virtual machine in the path.
 
+When you get annoyed by the ridiculously long command names (you will!), please read the appendix on [tabbability](#appendix-tabbability).
+
 #### Compile
 
 To compile the code, make sure a Java 8 virtual machine is installed on your computer, then run `./sbtw` from the base directory of this repository. The first time you run this, lots of suff will get
@@ -54,7 +57,6 @@ downloaded and it will be slow. You will be prompted to create a wallet, to let 
 sbt:quick-and-dirty-token-overview> compile
 
 ```
-
 #### Test (optional)
 
 To run the unit tests, you will need `ganache-cli` installed on your machine, which is a node.js application. If you are set up for that kind of thing...
@@ -76,7 +78,7 @@ which will deploy the solidity smart-contracts in a local, temporary environment
 #### Deploy and interact on ropsten
 
 Before you can deploy contracts defined in this package, you will need to get some Ropsten test ether from a faucet. Try or https://blog.b9lab.com/when-we-first-built-our-faucet-we-deployed-it-on-the-morden-testnet-70bfbf4e317e (I recommend "script ninja mode") or https://faucet.ropsten.be. Use the account you created on startup.
-If you have forgotten it, you can use...
+If you have forgotten it, try...
 ```
 sbt:quick-and-dirty-token-overview> ethKeystoreList
 ```
@@ -228,7 +230,7 @@ when auditing your own code. Here are some items on that checklist, things you a
 
 ### 1. Unsafe arithemtic
 
-Solidity numerical data types are fixed length and silently overflow. *Using built-in arithmetic operators is unsafe! You should almost never do it*
+Solidity numerical data types are fixed length and can silently overflow or underflow. *Using built-in arithmetic operators is unsafe! You should almost never do it*
 Instead use something like Open Zeppelin's [SafeMath](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol).
 Note that it is important to use safe operators even for things you consider relatively innocuous, like checks and tests, as well as obviously high-value
 operations like mutations / transfers / etc.
@@ -373,6 +375,63 @@ compilation units must be preserved.
 
 Everything that can be exploited will be exploited. No checklist can capture it all.
 
+## Some other things to think about
+
+### Pausability or freezability
+
+It may be useful to have an address (which may represent an authentication policy, rather than a single private key, as in a multisig wallet)
+that can pause or freeze the mutators (non-read-only) functions of a token in case the contract needs to be supeceded or something goes badly
+wrong. It may be useful for the "pauser" of the contract to be distinct from the "owner" who can mint and redeem, as a backstop in case the
+keys of the minter/redeemer are compromised.
+
+### Whitelists and blacklists
+
+Some tokens protect some functions (especially minting) with a whitelist, and allow for a blacklist presence on which effectively
+freezes a token account.
+
+### Contract-owner initiated transfers
+
+When a token is not intended to represent a "trustless" app, but is a liability of the centralized organization, it may be useful for the
+centralized organization to be able to authenticate transfers of the tokens between arbitrary accounts. That way, a class of users of the
+token who interact only with the sponsoring organization, but not with the Ethereum network or even Ethereum primitives like signatures,
+may be supported.
+
+Users of a token that supports this "feature" obviously put a great deal of trust in the owner or sponsor of the contract. However, all
+transfers made in this way would be public and immutably auditable on the blockchain, so if the sponsor is accountable via legal and
+regulatory channels, users of the token may consider the convenience worth the risk.
+
+This is entirely inappropriate, however, for tokens intended to represent claims on "trustless" or decentralized applications.
+
+### Batching
+
+There may be some savings, in cost and network overhead, to batching multiple transactions &mdash; transfers, mints, and burns &mdash
+into a single transaction. One way to do this is to add batch methods to the token contract itself. Infamously, however, this was the path
+by which [a catastrophic overflow bug was introduced into a bunch of well-known tokens](https://medium.com/@peckshield/alert-new-batchoverflow-bug-in-multiple-erc20-smart-contracts-cve-2018-10299-511067db6536),
+so it has a bit of a bad reputation. However, a batch function can be properly rather than improperly coded.
+
+It's worth noting, however, that one can avoid the extra complexity and high-stakes auditing that goes along with adding new functions to the token
+contract and still get the benefits of batching. Just leave the batch functionality out of the token contract itself, but write a new "Batcher" contract,
+and let that contract make calls on the token itself. Something like the following (quick and dirty and never compiled!) pseudocode...
+```
+contract MintableERC20 {
+   function mint( address receiver, uint amount ) returns (bool);
+}
+contract Batcher {
+  function batchMint( address mintableToken, address[] receivers, address[] amounts ) {
+    uint len = receivers,length;
+    require( amounts.length == len );
+    for (uint i = 0; i < len; ++i ) {
+       bool check = MintableERC20(mintableToken).mint( receivers[i], amounts[i] );
+       if (!check) revert();
+    }
+  }
+}
+```
+
+### "Advanced" token standards
+
+At least two prominent proposals have been made to replace the ERC 20 standard, [ERC-223](https://github.com/ethereum/EIPs/issues/223) and [EIP-777](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-777.md).
+Neither has yet "caught on", but one may. (My suspicion is that 777 is more likely, but things are moving slowly.) It's worth thinking about how one would support these evolving standards.
 
 
 
