@@ -122,7 +122,7 @@ so that only the upgrading party can call them and they cannot be called more th
 
 ### 5. Sending ETH can be dangerous
 
-_Note: An ERC-20 token usually does not need to send or receive ETH._
+_Note: An ERC-20 token usually does not need to send or receive ETH. But sending tokens can be dangerous too, see below._
 
 When you try to send ETH from a smart contract, your attempt to send may not work, or else it may work but much more than you bargained for may occur.
 
@@ -151,14 +151,30 @@ modification of contract state that must be performed, and only afterwards "inte
 are the last thing you do, and you don't need to update state in response to those interactions, then any callbacks
 back into the contract from interactions can be considered to have occurred logically after your own function has completed.
 
-### 6. Reentrancy
+### 6. Sending tokens can be dangerous
+
+Token stanards like ERC-20 define an interface that tokens must support, and make it easy to write code that can interact with any kind of token
+in a standard way.
+
+However, putative implementations of tokens may do anything they please when the functions defined by those interfaces are called. _Just as when you send ETH (see above),
+when you transfer tokens (or invoke any other not-read-only functions on a token smart contact), you are handing control over to that smart contract, which may do
+unexpected and nefarious things!_ (See this [report of an interesting hack by Connext](https://medium.com/connext/transparency-report-64c9e58e0a19).)
+Try to interacting with a token smart contracts you have vetted and trust. When you write code that interacts with tokens generically, keep in mind that simple
+token transfers might do arbitrary things, including calling back into the contract performing the transfers. Try to protect against reentrancy hacks by adhering to the
+"checks, effects, interactions" pattern, considering token transfers or calls to non `pure` or `view` functions as interactions.
+
+But be careful, even "checks" can be dangerous. Your contract might call a function like `balanceOf` that you expect to be read only, but that in fact performs some
+arbitrary action. Solidity lets one mark contracts pure or view, but these attribute are not enforced by the ABI/EVM as part of a contract's interface. Unless you have
+inspected verified source code, you cannot be sure what even "read-only" functions of untrusted token contracts might get up to.
+
+### 7. Reentrancy
 
 It is not only sending ether that surrenders control to another caller who might unexpectedly "re-enter", or call functions on the contract while another function
 remains in process. Any time a contract calls calls a function on another contract, such a callback could occur. Just as with payments, contract authors should treat
-calls to contracts outside of their own authorship and control as potentially malicious re-enterers, an should strive to adhere to the "checks, effects, interactions"
+calls to contracts outside of their own authorship and control as potentially malicious re-enterers, and should strive to adhere to the "checks, effects, interactions"
 pattern.
 
-### 7. Unexpected excess ETH or token balances
+### 8. Unexpected excess ETH or token balances
 
 Contracts can refuse to accept payments in ETH by failing to mark any function (including the default, fallback function) as `payable`. However, their are two ways to
 circumvent this restriction. Payments will occur regardless of the presence of any `payable` function if
@@ -173,14 +189,14 @@ but it may be greater.
 Similarly, a contract has no control over how many ERC20 tokens its address receives. While the contract may (using the `approve` / `transferFrom` mechanism)
 control some inflows of tokens, other parties may add to a contract's token balance without any notification of or capacity to refuse by the recipient contract.
 
-### 8. Frozen token balances
+### 9. Frozen token balances
 
 Unless a smart contract expects to receive and is coded to interact with an ERC20 token, tokens sent to that contract's address will usually be frozen forever.
 ERC 20 token contracts have no way of vetoing transfers to them. (Successors to the ERC 20 standard hope to add such vetos.)
 
 It is possible to code contracts such that some "owner" can withdraw unexpected token balances sent to the contract.
 
-### 9. Inheritance linearization confusions
+### 10. Inheritance linearization confusions
 
 Solidity supports multiple inheritance, and customization via inheritance and mixins is quite common. Under the covers, Solidity uses [C3 Linearization](https://en.wikipedia.org/wiki/C3_linearization)
 to order the inheritance relationship. However, while the linearization algorithm does its job of imposing a unique ordering of contracts (from base to derived), as hierarchies
