@@ -4,9 +4,9 @@ version := "0.0.1-SNAPSHOT"
 
 ethcfgScalaStubsPackage := "quickanddirty.contract"
 
-ethcfgChainId := 3 // ropsten
+ethcfgNodeChainId := 3 // ropsten
 
-ethcfgJsonRpcUrl := {
+ethcfgNodeUrl := {
   try {
     val infuraToken = sys.env("ETH_INFURA_TOKEN")
     s"""https://ropsten.infura.io/${infuraToken}"""
