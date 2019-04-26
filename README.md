@@ -134,7 +134,7 @@ There are three common ways to send:
    2. `<address>.transfer(uint256 amount)`
    3. `<address>.call.value(uint256 amount)() returns (bool)`
 
-`<address>.send(uint256 amount) returns (bool)` and `<address>.transfer(uint256 amount) returns (bool)` both limit the amount of computation a recipient might do
+`<address>.send(uint256 amount) returns (bool)` and `<address>.transfer(uint256 amount)` both limit the amount of computation a recipient might do
 in response to a payment, because they forward precisely 2300 gas to receipients. Using `call()` by default forwards all available gas (or you can set a custom
 gas limit to forward). `transfer` reverts the transaction if the attempt to send fails. `send` and `call` do not revert, be careful to check the return value to know
 whether the attempt succeeded.
