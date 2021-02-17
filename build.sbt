@@ -1,3 +1,4 @@
+
 name := "quick-and-dirty-token-overview"
 
 version := "0.0.1-SNAPSHOT"
@@ -5,6 +6,8 @@ version := "0.0.1-SNAPSHOT"
 ethcfgScalaStubsPackage := "quickanddirty.contract"
 
 ethcfgNodeChainId := 3 // ropsten
+
+ethcfgSolidityCompilerVersion := "0.4"
 
 ethcfgNodeUrl := {
   try {
